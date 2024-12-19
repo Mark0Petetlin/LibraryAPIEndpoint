@@ -32,7 +32,7 @@ const (
 						  INSERT INTO books (title, quantity) SELECT column1 AS title, column2 AS quantity FROM new_books WHERE NOT EXISTS (SELECT 1 FROM books WHERE books.title = new_books.column1);`
 )
 
-// db formats
+// User db formats
 type User struct {
 	ID        int    `json:"id"`
 	FirstName string `json:"first_name"`
@@ -73,8 +73,8 @@ func main() {
 
 	defer db.Close()
 
-	log.Fatal(http.ListenAndServe(":8080", route))
 	log.Println("Server started on :8080")
+	log.Fatal(http.ListenAndServe(":8080", route))
 }
 
 // db init
@@ -89,7 +89,7 @@ func initDB() {
 	db.Exec(AddBooksIfNotExist)
 }
 
-// connects to DB using credatials from .env file
+// connects to DB using credentials from .env file
 func dbConnect() (db *sql.DB) {
 	var err error
 
@@ -214,7 +214,7 @@ func borrowBook(writer http.ResponseWriter, request *http.Request) {
 	json.NewEncoder(writer).Encode(map[string]string{"status": "book borrowed"})
 }
 
-// retruns book based on book id if book entry exists
+// returns book based on book id if book entry exists
 func returnBook(writer http.ResponseWriter, request *http.Request) {
 	if err := json.NewDecoder(request.Body).Decode(&BorrowData); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
